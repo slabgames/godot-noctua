@@ -3,7 +3,6 @@ package com.slabgames.noctua;
 import static java.util.Collections.emptyList;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -13,13 +12,9 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Objects;
 
 import org.godotengine.godot.plugin.UsedByGodot;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
 import com.noctuagames.sdk.Noctua;
 
 import android.app.Application.ActivityLifecycleCallbacks;
@@ -40,7 +35,7 @@ public class GodotNoctua extends GodotPlugin {
     public GodotNoctua(Godot godot) {
         super(godot);
     }
-    
+
     @Override
     public String getPluginName() {
         return "GodotNoctua";
