@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.godotengine.godot.plugin.UsedByGodot;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class GodotNoctua extends GodotPlugin {
     public GodotNoctua(Godot godot) {
         super(godot);
     }
-
+    
     @Override
     public String getPluginName() {
         return "GodotNoctua";
@@ -61,7 +62,7 @@ public class GodotNoctua extends GodotPlugin {
 
 
     // Public methods
-
+    @UsedByGodot
     public void init(final String token, final boolean ProductionMode) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -122,6 +123,7 @@ public class GodotNoctua extends GodotPlugin {
         //...
     }
 
+    @UsedByGodot
     public void track_purchase(final String event, final Dictionary params)
     {
         // Equivalent to val map = mutableMapOf<String, String>() in Kotlin
@@ -142,13 +144,14 @@ public class GodotNoctua extends GodotPlugin {
         }
     }
 
+    @UsedByGodot
     public void track_event(final String event, final Dictionary params)
     {
 
         noctuaSDK.trackCustomEvent(event, params);
     }
 
-
+    @UsedByGodot
     public void track_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
         noctuaSDK.trackAdRevenue(
