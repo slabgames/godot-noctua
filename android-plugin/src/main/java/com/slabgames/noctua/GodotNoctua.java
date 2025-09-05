@@ -15,12 +15,6 @@ import org.json.JSONException;
 
 import android.app.Application.ActivityLifecycleCallbacks;
 
-import androidx.annotation.NonNull;
-
-import com.adjust.sdk.Adjust;
-import com.adjust.sdk.AdjustEvent;
-import com.adjust.sdk.AdjustConfig;
-import com.adjust.sdk.LogLevel;
 
 
 import org.godotengine.godot.Dictionary;
@@ -42,15 +36,7 @@ public class GodotNoctua extends GodotPlugin {
     public String getPluginName() {
         return "GodotNoctua";
     }
-
-    @Override
-    public List<String> getPluginMethods() {
-        return Arrays.asList(
-                "init",
-                "track_event",
-                "track_revenue"
-        );
-    }
+    
 
     /*
     @Override
@@ -106,28 +92,13 @@ public class GodotNoctua extends GodotPlugin {
 
                 String appToken = token;
                 String environment;
-                AdjustConfig config;
+
 
                 if (ProductionMode == true) {
-                    environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
                 }
                 else {
-                    environment = AdjustConfig.ENVIRONMENT_SANDBOX;
                 }
                 
-                config = new AdjustConfig(getActivity().getApplicationContext(), appToken, environment);
-                if (ProductionMode == true) {
-                    config.setLogLevel(LogLevel.SUPRESS);
-                }
-                else {
-                    config.setLogLevel(LogLevel.VERBOSE);
-                }
-
-                Adjust.onCreate(config);
-                Adjust.onResume();
-                
-                getActivity().getApplication().registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
-
 
                 Log.d(TAG,"Adjust plugin inited on Java");
             }
@@ -148,12 +119,12 @@ public class GodotNoctua extends GodotPlugin {
 
         @Override
          public void onActivityResumed(Activity activity) {
-             Adjust.onResume();
+
          }
 
          @Override
          public void onActivityPaused(Activity activity) {
-             Adjust.onPause();
+
          }
 
         @Override
@@ -176,16 +147,15 @@ public class GodotNoctua extends GodotPlugin {
     
     public void track_event(final String event, final Dictionary params)
     {
-        AdjustEvent adjustEvent = new AdjustEvent(event);
-        Adjust.trackEvent(adjustEvent);
+
     }
 
 
     public void track_revenue(final String revenue, final String currency, final String signature, final String originalJson, final String public_key)
     {
-        AdjustEvent adjustEvent = new AdjustEvent(signature);
-        adjustEvent.setRevenue(Double.parseDouble(revenue), currency);
-        Adjust.trackEvent(adjustEvent);
+//        AdjustEvent adjustEvent = new AdjustEvent(signature);
+//        adjustEvent.setRevenue(Double.parseDouble(revenue), currency);
+//        Adjust.trackEvent(adjustEvent);
     }
 
 
