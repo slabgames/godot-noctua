@@ -1,17 +1,25 @@
 package com.slabgames.noctua;
 
+import static java.util.Collections.emptyList;
+
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+import com.noctuagames.sdk.Noctua;
 
 import android.app.Application.ActivityLifecycleCallbacks;
 
@@ -26,9 +34,9 @@ import org.godotengine.godot.plugin.SignalInfo;
 public class GodotNoctua extends GodotPlugin {
 
     private final String TAG = GodotNoctua.class.getName();
+    private Noctua noctuaSDK;
 
-    public GodotNoctua(Godot godot)
-    {
+    public GodotNoctua(Godot godot) {
         super(godot);
     }
 
@@ -36,7 +44,7 @@ public class GodotNoctua extends GodotPlugin {
     public String getPluginName() {
         return "GodotNoctua";
     }
-    
+
 
     /*
     @Override
@@ -47,45 +55,14 @@ public class GodotNoctua extends GodotPlugin {
 
     @Override
     public View onMainCreate(Activity activity) {
-        // final Activity act = activity;
-        // act.runOnUiThread(new Runnable() {
-        //     @Override
-        //     public void run() {
 
-        //         String appToken = "opp0c2aasagw";
-        //         String environment;
-        //         AdjustConfig config;
-        //         boolean ProductionMode = false;
-
-        //         if (ProductionMode == true) {
-        //             environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
-        //         }
-        //         else {
-        //             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
-        //         }
-                
-        //         config = new AdjustConfig(act.getApplicationContext(), appToken, environment);
-        //         if (ProductionMode == true) {
-        //             config.setLogLevel(LogLevel.SUPRESS);
-        //         }
-        //         else {
-        //             config.setLogLevel(LogLevel.VERBOSE);
-        //         }
-
-        //         Adjust.onCreate(config);
-                
-        //         act.getApplication().registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
-        //         Log.d(TAG,"Adjust plugin inited onCreate");
-        //     }
-        // });
         return null;
     }
 
 
     // Public methods
 
-    public void init(final String token, final boolean ProductionMode)
-    {
+    public void init(final String token, final boolean ProductionMode) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -93,70 +70,97 @@ public class GodotNoctua extends GodotPlugin {
                 String appToken = token;
                 String environment;
 
-
+                List<String> publishedApps;
+                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps = emptyList());
                 if (ProductionMode == true) {
+                } else {
                 }
-                else {
-                }
-                
 
-                Log.d(TAG,"Adjust plugin inited on Java");
+
+                Log.d(TAG, "Adjust plugin inited on Java");
             }
         });
     }
 
-    private static final class AdjustLifecycleCallbacks implements ActivityLifecycleCallbacks {
+    private static final class NoctuaLifecycleCallbacks implements ActivityLifecycleCallbacks {
         @Override
-        public void onActivityCreated (Activity activity, 
-                Bundle savedInstanceState) {
-            
-        }
-
-        @Override
-        public void onActivityStarted( Activity activity) {
+        public void onActivityCreated(Activity activity,
+                                      Bundle savedInstanceState) {
 
         }
 
         @Override
-         public void onActivityResumed(Activity activity) {
-
-         }
-
-         @Override
-         public void onActivityPaused(Activity activity) {
-
-         }
-
-        @Override
-        public void onActivityStopped( Activity activity) {
+        public void onActivityStarted(Activity activity) {
 
         }
 
         @Override
-        public void onActivitySaveInstanceState( Activity activity, Bundle bundle) {
+        public void onActivityResumed(Activity activity) {
 
         }
 
         @Override
-        public void onActivityDestroyed( Activity activity) {
+        public void onActivityPaused(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
 
         }
 
         //...
-     }
-    
+    }
+
+    public void track_purchase(final String event, final Dictionary params)
+    {
+        // Equivalent to val map = mutableMapOf<String, String>() in Kotlin
+        Map<String, Object> mutableMap = new HashMap<>();
+
+        // Equivalent to map["key1"] = "value1" in Kotlin
+        mutableMap.put("name", "Alice");
+        mutableMap.put("type", "User");
+        if(noctuaSDK!= null)
+        {
+            noctuaSDK.trackPurchase(
+                    "order-123",
+                    9.99,
+                    "USD",
+                    params
+                    //extraPayload = mutableMapOf("sku" to "premium_upgrade")
+            );
+        }
+    }
+
     public void track_event(final String event, final Dictionary params)
     {
 
+        noctuaSDK.trackCustomEvent(event, params);
     }
 
 
-    public void track_revenue(final String revenue, final String currency, final String signature, final String originalJson, final String public_key)
+    public void track_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
-//        AdjustEvent adjustEvent = new AdjustEvent(signature);
-//        adjustEvent.setRevenue(Double.parseDouble(revenue), currency);
-//        Adjust.trackEvent(adjustEvent);
+        noctuaSDK.trackAdRevenue(
+//                "admob_sdk",
+                adSource,
+                Double.parseDouble(revenue),
+                currency,
+                params
+        );
     }
+
+
 
 
     // Internal methods
