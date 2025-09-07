@@ -48,7 +48,7 @@ dependencies {
      library when building the final binary.
      */
     compileOnly fileTree(dir: 'libs', include: ['godot-lib*.aar'])
-    implementation("com.noctuagames.sdk:noctua-android-sdk:0.13.0")
+    implementation("com.noctuagames.sdk:noctua-android-sdk:0.13.1")
 }
 
 
