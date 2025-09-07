@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="ru.mobilap.adjust">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
   <application>
     <!--
@@ -11,17 +11,17 @@
     initializer.
     -->
     <meta-data
-        android:name="org.godotengine.plugin.v1.GodotAdjust"
-        android:value="ru.mobilap.adjust.GodotAdjust" />
+        android:name="org.godotengine.plugin.v1.GodotNoctua"
+        android:value="com.slabgames.noctua.GodotNoctua" />
 
-    <receiver
-        android:name="com.adjust.sdk.AdjustReferrerReceiver"
-        android:permission="android.permission.INSTALL_PACKAGES"
-        android:exported="true" >
-        <intent-filter>
-            <action android:name="com.android.vending.INSTALL_REFERRER" />
-        </intent-filter>
-    </receiver>
+<!--    <receiver-->
+<!--        android:name="com.adjust.sdk.AdjustReferrerReceiver"-->
+<!--        android:permission="android.permission.INSTALL_PACKAGES"-->
+<!--        android:exported="true" >-->
+<!--        <intent-filter>-->
+<!--            <action android:name="com.android.vending.INSTALL_REFERRER" />-->
+<!--        </intent-filter>-->
+<!--    </receiver>-->
 
   </application>
   <uses-permission android:name="android.permission.INTERNET" />
