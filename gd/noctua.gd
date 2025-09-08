@@ -1,28 +1,28 @@
 extends Node
 
-var _adjust = null
+var _noctua = null
 
 func _ready():
-    if Engine.has_singleton("GodotAdjust"):
-        _adjust = Engine.get_singleton("GodotAdjust")
+    if Engine.has_singleton("GodotNoctua"):
+        _noctua = Engine.get_singleton("GodotNoctua")
     else:
-        push_warning('Adjust plugin not found!')
-    if ProjectSettings.has_setting('Adjust/AppToken'):
-        var token = ProjectSettings.get_setting('Adjust/AppToken')
+        push_warning('Noctua plugin not found!')
+    if ProjectSettings.has_setting('Noctua/AppToken'):
+        var token = ProjectSettings.get_setting('Noctua/AppToken')
         init(token, not OS.is_debug_build())
     else:
-        push_error('You should set Adjust/AppToken to SDK initialization')
+        push_error('You should set Noctua/AppToken to SDK initialization')
 
 func init(token: String, production := false) -> void:
-    if _adjust != null:
-        _adjust.init(token, production)
-        print('Adjust plugin inited!')
+    if _noctua != null:
+        _noctua.init(token, production)
+        print('Noctua plugin inited!')
         
 func track_event(event: String) -> void:
-    if _adjust != null:
+    if _noctua != null:
         _adjust.trackEvent(event)
 
 func track_revenue(event: String, revenue: float, currency := 'USD') -> void:
-    if _adjust != null:
-        _adjust.trackRevenue(event, revenue, currency)
+    if _noctua != null:
+        _noctua.trackRevenue(event, revenue, currency)
 
