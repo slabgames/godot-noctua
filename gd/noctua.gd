@@ -20,7 +20,7 @@ func init(token: String, production := false) -> void:
         
 func track_event(event: String) -> void:
     if _noctua != null:
-        _adjust.trackEvent(event)
+        _noctua.trackEvent(event)
 
 func track_revenue(event: String, revenue: float, currency := 'USD') -> void:
     if _noctua != null:
