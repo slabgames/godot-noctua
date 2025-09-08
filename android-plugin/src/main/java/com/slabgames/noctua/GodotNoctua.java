@@ -58,19 +58,20 @@ public class GodotNoctua extends GodotPlugin {
 
     // Public methods
     @UsedByGodot
+//    public void init(final String token, final boolean ProductionMode) {
     public void init(final String token, final boolean ProductionMode) {
-        getActivity().runOnUiThread(new Runnable() {
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-                String appToken = token;
-                String environment;
+//                String appToken = token;
+//                String environment;
 
                 List<String> publishedApps;
                 noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps = emptyList());
-                if (ProductionMode == true) {
-                } else {
-                }
+//                if (ProductionMode == true) {
+//                } else {
+//                }
 
 
                 Log.d(TAG, "Adjust plugin inited on Java");

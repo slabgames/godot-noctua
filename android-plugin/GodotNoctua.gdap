@@ -1,11 +1,11 @@
 [config]
 
-name="GodotAdjust"
+name="GodotNoctua"
 binary_type="local"
-binary="GodotAdjust.release.aar"
+binary="GodotNoctua.release.aar"
 
 [dependencies]
 
 local=[]
-remote=["com.adjust.sdk:adjust-android:4.28.4"]
-custom_maven_repos=["https://dl.bintray.com/mobilap/maven/"]
+remote=["com.noctuagames.sdk:noctua-android-sdk:0.13.1"]
+custom_maven_repos=[""]
