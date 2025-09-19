@@ -59,7 +59,7 @@ public class GodotNoctua extends GodotPlugin {
     // Public methods
     @UsedByGodot
 //    public void init(final String token, final boolean ProductionMode) {
-    public void init(final String token, final boolean ProductionMode) {
+    public void init() {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
