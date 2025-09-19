@@ -120,22 +120,22 @@ public class GodotNoctua extends GodotPlugin {
     }
 
     @UsedByGodot
-    public void track_purchase(final String event, final Dictionary params)
+    public void track_purchase(final String orderId, final String amount, final String currency, final Dictionary payload)
     {
         // Equivalent to val map = mutableMapOf<String, String>() in Kotlin
         Map<String, Object> mutableMap = new HashMap<>();
 
         // Equivalent to map["key1"] = "value1" in Kotlin
-        mutableMap.put("name", "Alice");
-        mutableMap.put("type", "User");
+//        mutableMap.put("name", "Alice");
+//        mutableMap.put("type", "User");
         if(noctuaSDK!= null)
         {
             noctuaSDK.trackPurchase(
-                    "order-123",
-                    9.99,
-                    "USD",
-                    params
-                    //extraPayload = mutableMapOf("sku" to "premium_upgrade")
+                    orderId,
+                    Float.parseFloat(amount),
+                    currency,
+                    payload
+                    //payload = mutableMapOf("sku" to "premium_upgrade")
             );
         }
     }
@@ -143,22 +143,30 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_event(final String event, final Dictionary params)
     {
-
-        noctuaSDK.trackCustomEvent(event, params);
+        if(noctuaSDK!= null) {
+            noctuaSDK.trackCustomEvent(event, params);
+        }
     }
 
     @UsedByGodot
     public void track_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
-        noctuaSDK.trackAdRevenue(
+        if(noctuaSDK!= null) {
+            noctuaSDK.trackAdRevenue(
 //                "admob_sdk",
-                adSource,
-                Double.parseDouble(revenue),
-                currency,
-                params
-        );
+                    adSource,
+                    Float.parseFloat(revenue),
+                    currency,
+                    params
+            );
+        }
     }
 
+    @UsedByGodot
+    public void track_custom_event_with_revenue(final String eventName, final String revenue, final String currency, final Dictionary payload)
+    {
+        noctuaSDK.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
+    }
 
 
 
