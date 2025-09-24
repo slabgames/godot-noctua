@@ -149,7 +149,7 @@ public class GodotNoctua extends GodotPlugin {
     }
 
     @UsedByGodot
-    public void track_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
+    public void track_ad_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
         if(noctuaSDK!= null) {
             noctuaSDK.trackAdRevenue(
