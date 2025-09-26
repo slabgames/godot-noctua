@@ -65,7 +65,7 @@ public class GodotNoctua extends GodotPlugin {
             public void run() {
 
                 List<String> publishedApps= emptyList();
-                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
+//                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
 
                 Noctua.Companion.init((Context) Objects.requireNonNull(getActivity()),publishedApps);
 
@@ -118,22 +118,20 @@ public class GodotNoctua extends GodotPlugin {
     public void track_purchase(final String orderId, final String amount, final String currency, final Dictionary payload)
     {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    Map<String, Object> mutableMap = new HashMap<>();
-                                                                    if(noctuaSDK!= null)
-                                                                    {
-                                                                        Noctua.Companion.trackPurchase(
-                                                                                orderId,
-                                                                                Float.parseFloat(amount),
-                                                                                currency,
-                                                                                payload
-                                                                                //payload = mutableMapOf("sku" to "premium_upgrade")
-                                                                        );
-                                                                        Log.d(TAG, "Noctua track purchase called");
-                                                                    }
-                                                                }
-                                                            });
+            @Override
+            public void run() {
+//            if(noctuaSDK!= null)
+//            {
+                Noctua.Companion.trackPurchase(
+                        orderId,
+                        Float.parseFloat(amount),
+                        currency,
+                        payload
+                );
+                Log.d(TAG, "Noctua track purchase called");
+//            }
+        }
+    });
     }
 
     @UsedByGodot
@@ -142,10 +140,10 @@ public class GodotNoctua extends GodotPlugin {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(noctuaSDK!= null) {
+//                if(noctuaSDK!= null) {
                     Noctua.Companion.trackCustomEvent(event, params);
                     Log.d(TAG, "Noctua track event "+event + " called");
-                }
+//                }
             }
         });
 
@@ -159,7 +157,7 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
 
-                if(noctuaSDK!= null) {
+//                if(noctuaSDK!= null) {
                     Noctua.Companion.trackAdRevenue(
                             adSource,
                             Float.parseFloat(revenue),
@@ -167,7 +165,7 @@ public class GodotNoctua extends GodotPlugin {
                             params
                     );
                     Log.d(TAG, "Noctua track ad revenue called. From : " + adSource);
-                }
+//                }
             }
         });
 
@@ -180,11 +178,11 @@ public class GodotNoctua extends GodotPlugin {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (noctuaSDK!=null)
-                {
+//                if (noctuaSDK!=null)
+//                {
                     Noctua.Companion.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
                     Log.d(TAG, "Noctua track custom event called. Event = "+eventName);
-                }
+//                }
             }
         });
 
