@@ -74,7 +74,7 @@ public class GodotNoctua extends GodotPlugin {
 //                }
 
 
-                Log.d(TAG, "Adjust plugin inited on Java");
+                Log.d(TAG, "Noctua plugin inited on Java");
             }
         });
     }
@@ -137,7 +137,9 @@ public class GodotNoctua extends GodotPlugin {
                     payload
                     //payload = mutableMapOf("sku" to "premium_upgrade")
             );
+            Log.d(TAG, "Noctua track purchase called");
         }
+
     }
 
     @UsedByGodot
@@ -145,7 +147,9 @@ public class GodotNoctua extends GodotPlugin {
     {
         if(noctuaSDK!= null) {
             noctuaSDK.trackCustomEvent(event, params);
+            Log.d(TAG, "Noctua track event "+event + " called");
         }
+
     }
 
     @UsedByGodot
@@ -159,13 +163,20 @@ public class GodotNoctua extends GodotPlugin {
                     currency,
                     params
             );
+            Log.d(TAG, "Noctua track ad revenue called. From : " + adSource);
         }
+
     }
 
     @UsedByGodot
     public void track_custom_event_with_revenue(final String eventName, final String revenue, final String currency, final Dictionary payload)
     {
-        noctuaSDK.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
+        if (noctuaSDK!=null)
+        {
+            noctuaSDK.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
+            Log.d(TAG, "Noctua track custom event called. Event = "+eventName);
+        }
+
     }
 
 
