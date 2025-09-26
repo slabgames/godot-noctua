@@ -64,15 +64,8 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
 
-//                String appToken = token;
-//                String environment;
-
                 List<String> publishedApps;
                 noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps = emptyList());
-//                if (ProductionMode == true) {
-//                } else {
-//                }
-
 
                 Log.d(TAG, "Noctua plugin inited on Java");
             }
@@ -122,60 +115,77 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_purchase(final String orderId, final String amount, final String currency, final Dictionary payload)
     {
-        // Equivalent to val map = mutableMapOf<String, String>() in Kotlin
-        Map<String, Object> mutableMap = new HashMap<>();
-
-        // Equivalent to map["key1"] = "value1" in Kotlin
-//        mutableMap.put("name", "Alice");
-//        mutableMap.put("type", "User");
-        if(noctuaSDK!= null)
-        {
-            noctuaSDK.trackPurchase(
-                    orderId,
-                    Float.parseFloat(amount),
-                    currency,
-                    payload
-                    //payload = mutableMapOf("sku" to "premium_upgrade")
-            );
-            Log.d(TAG, "Noctua track purchase called");
-        }
-
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Map<String, Object> mutableMap = new HashMap<>();
+                                                                    if(noctuaSDK!= null)
+                                                                    {
+                                                                        noctuaSDK.trackPurchase(
+                                                                                orderId,
+                                                                                Float.parseFloat(amount),
+                                                                                currency,
+                                                                                payload
+                                                                                //payload = mutableMapOf("sku" to "premium_upgrade")
+                                                                        );
+                                                                        Log.d(TAG, "Noctua track purchase called");
+                                                                    }
+                                                                }
+                                                            });
     }
 
     @UsedByGodot
     public void track_event(final String event, final Dictionary params)
     {
-        if(noctuaSDK!= null) {
-            noctuaSDK.trackCustomEvent(event, params);
-            Log.d(TAG, "Noctua track event "+event + " called");
-        }
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(noctuaSDK!= null) {
+                    noctuaSDK.trackCustomEvent(event, params);
+                    Log.d(TAG, "Noctua track event "+event + " called");
+                }
+            }
+        });
+
 
     }
 
     @UsedByGodot
     public void track_ad_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
-        if(noctuaSDK!= null) {
-            noctuaSDK.trackAdRevenue(
-//                "admob_sdk",
-                    adSource,
-                    Float.parseFloat(revenue),
-                    currency,
-                    params
-            );
-            Log.d(TAG, "Noctua track ad revenue called. From : " + adSource);
-        }
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if(noctuaSDK!= null) {
+                    noctuaSDK.trackAdRevenue(
+                            adSource,
+                            Float.parseFloat(revenue),
+                            currency,
+                            params
+                    );
+                    Log.d(TAG, "Noctua track ad revenue called. From : " + adSource);
+                }
+            }
+        });
+
 
     }
 
     @UsedByGodot
     public void track_custom_event_with_revenue(final String eventName, final String revenue, final String currency, final Dictionary payload)
     {
-        if (noctuaSDK!=null)
-        {
-            noctuaSDK.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
-            Log.d(TAG, "Noctua track custom event called. Event = "+eventName);
-        }
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (noctuaSDK!=null)
+                {
+                    noctuaSDK.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,payload);
+                    Log.d(TAG, "Noctua track custom event called. Event = "+eventName);
+                }
+            }
+        });
+
 
     }
 
