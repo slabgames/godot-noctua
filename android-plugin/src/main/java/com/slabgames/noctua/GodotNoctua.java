@@ -51,14 +51,25 @@ public class GodotNoctua extends GodotPlugin {
 
     @Override
     public View onMainCreate(Activity activity) {
-
+//        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                List<String> publishedApps= emptyList();
+////                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
+//
+//                Noctua.Companion.init((Context) Objects.requireNonNull(activity),publishedApps);
+//
+//                Log.d(TAG, "Noctua plugin inited on Java");
+//            }
+//        });
         return null;
     }
 
 
     // Public methods
     @UsedByGodot
-//    public void init(final String token, final boolean ProductionMode) {
+//    public void init() {
     public void init() {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
