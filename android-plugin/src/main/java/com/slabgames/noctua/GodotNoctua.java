@@ -66,6 +66,17 @@ public class GodotNoctua extends GodotPlugin {
         return null;
     }
 
+    @Override
+    public void onMainResume() {
+        super.onMainResume();
+        Noctua.Companion.onResume();
+    }
+
+    @Override
+    public void onMainPause() {
+        super.onMainPause();
+        Noctua.Companion.onPause();
+    }
 
     // Public methods
     @UsedByGodot
@@ -99,7 +110,7 @@ public class GodotNoctua extends GodotPlugin {
 
         @Override
         public void onActivityResumed(Activity activity) {
-
+            Noctua.Companion.onResume();
         }
 
         @Override
