@@ -220,10 +220,13 @@ public class GodotNoctua extends GodotPlugin {
     }
 
     @UsedByGodot
-    public void set_session_tag(String sessionName)
+    public void set_session_tag(final String sessionName)
     {
-        Noctua.Companion.setSessionTag(sessionName);
-        Log.d(TAG, "Noctua set session tag = "+sessionName);
+        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+            Noctua.Companion.setSessionTag(sessionName);
+            Log.d(TAG, "Noctua set session tag = "+sessionName);
+        });
+
     }
 
 
