@@ -19,7 +19,7 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "com.slabgames.noctua.GodotNoctua"
-    compileSdkVersion 35
+    compileSdkVersion 36
     buildToolsVersion "34.0.0"
 
     defaultConfig {
@@ -48,7 +48,7 @@ dependencies {
      library when building the final binary.
      */
     compileOnly fileTree(dir: 'libs', include: ['godot-lib*.aar'])
-    implementation("com.noctuagames.sdk:noctua-android-sdk:0.13.1")
+    implementation("com.noctuagames.sdk:noctua-android-sdk:0.17.0")
 }
 
 

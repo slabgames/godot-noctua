@@ -78,6 +78,16 @@ public class GodotNoctua extends GodotPlugin {
         Noctua.Companion.onPause();
     }
 
+
+    @Override
+    public void onMainDestroy() {
+
+        super.onMainDestroy();
+        Noctua.Companion.onDestroy();
+    }
+
+
+
     // Public methods
     @UsedByGodot
 //    public void init() {
@@ -115,7 +125,7 @@ public class GodotNoctua extends GodotPlugin {
 
         @Override
         public void onActivityPaused(Activity activity) {
-
+            Noctua.Companion.onPause();
         }
 
         @Override
@@ -207,8 +217,13 @@ public class GodotNoctua extends GodotPlugin {
 //                }
             }
         });
+    }
 
-
+    @UsedByGodot
+    public void set_session_tag(String sessionName)
+    {
+        Noctua.Companion.setSessionTag(sessionName);
+        Log.d(TAG, "Noctua set session tag = "+sessionName);
     }
 
 
