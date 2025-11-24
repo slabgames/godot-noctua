@@ -69,13 +69,14 @@ public class GodotNoctua extends GodotPlugin {
     @Override
     public void onMainResume() {
         super.onMainResume();
-        Noctua.Companion.onResume();
+        Objects.requireNonNull(getActivity()).runOnUiThread(Noctua.Companion::onResume);
     }
 
     @Override
     public void onMainPause() {
         super.onMainPause();
-        Noctua.Companion.onPause();
+        Objects.requireNonNull(getActivity()).runOnUiThread(Noctua.Companion::onPause);
+
     }
 
 
