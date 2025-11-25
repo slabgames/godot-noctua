@@ -41,6 +41,8 @@ public class GodotNoctua extends GodotPlugin {
         return "GodotNoctua";
     }
 
+    private boolean _inited = false;
+
 
     /*
     @Override
@@ -51,56 +53,68 @@ public class GodotNoctua extends GodotPlugin {
 
     @Override
     public View onMainCreate(Activity activity) {
-//        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                List<String> publishedApps= emptyList();
-////                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
-//
-//                Noctua.Companion.init((Context) Objects.requireNonNull(activity),publishedApps);
-//
-//                Log.d(TAG, "Noctua plugin inited on Java");
-//            }
-//        });
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> publishedApps= emptyList();
+                Noctua.Companion.initNoctuaApp(activity,publishedApps);
+            }
+        });
+
         return null;
     }
 
     @Override
     public void onMainResume() {
         super.onMainResume();
-        Objects.requireNonNull(getActivity()).runOnUiThread(Noctua.Companion::onResume);
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(_inited)
+                    Noctua.Companion.onResume();
+            }
+        });
     }
 
     @Override
     public void onMainPause() {
         super.onMainPause();
-        Objects.requireNonNull(getActivity()).runOnUiThread(Noctua.Companion::onPause);
-
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(_inited)
+                    Noctua.Companion.onPause();
+            }
+        });
     }
 
 
     @Override
     public void onMainDestroy() {
-
         super.onMainDestroy();
-        Noctua.Companion.onDestroy();
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(_inited)
+                    Noctua.Companion.onDestroy();
+            }
+        });
     }
 
 
 
     // Public methods
     @UsedByGodot
-//    public void init() {
     public void init() {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
+
                 List<String> publishedApps= emptyList();
 //                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
 
-                Noctua.Companion.init((Context) Objects.requireNonNull(getActivity()),publishedApps);
+                Noctua.Companion.init(Objects.requireNonNull(getActivity()),publishedApps);
 
                 Log.d(TAG, "Noctua plugin inited on Java");
             }
@@ -121,12 +135,24 @@ public class GodotNoctua extends GodotPlugin {
 
         @Override
         public void onActivityResumed(Activity activity) {
-            Noctua.Companion.onResume();
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Noctua.Companion.onResume();
+                }
+            });
+
         }
 
         @Override
         public void onActivityPaused(Activity activity) {
-            Noctua.Companion.onPause();
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Noctua.Companion.onPause();
+                }
+            });
+
         }
 
         @Override
@@ -150,6 +176,8 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_purchase(final String orderId, final String amount, final String currency, final Dictionary payload)
     {
+        if(!_inited)
+            return;
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -170,6 +198,8 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_event(final String event, final Dictionary params)
     {
+        if(!_inited)
+            return;
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +216,8 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_ad_revenue(final String adSource, final String revenue, final String currency, final Dictionary params)
     {
+        if(!_inited)
+            return;
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -208,6 +240,8 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void track_custom_event_with_revenue(final String eventName, final String revenue, final String currency, final Dictionary payload)
     {
+        if(!_inited)
+            return;
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -223,9 +257,15 @@ public class GodotNoctua extends GodotPlugin {
     @UsedByGodot
     public void set_session_tag(final String sessionName)
     {
-        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-            Noctua.Companion.setSessionTag(sessionName);
-            Log.d(TAG, "Noctua set session tag = "+sessionName);
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_inited){
+                    Noctua.Companion.setSessionTag(sessionName);
+                    Log.d(TAG, "Noctua set session tag = "+sessionName);
+                }
+
+            }
         });
 
     }
