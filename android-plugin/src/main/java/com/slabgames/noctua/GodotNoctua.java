@@ -195,6 +195,15 @@ public class GodotNoctua extends GodotPlugin {
     });
     }
 
+    private HashMap<String, Object> toMap(Dictionary dict) {
+        HashMap<String, Object> map = new HashMap<>();
+        for (Object key : dict.keySet()) {
+            map.put(String.valueOf(key), dict.get(key));
+        }
+        return map;
+    }
+
+
     @UsedByGodot
     public void track_event(final String event, final Dictionary params)
     {
@@ -204,7 +213,7 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
 //                if(noctuaSDK!= null) {
-                    Noctua.Companion.trackCustomEvent(event, params);
+                    Noctua.Companion.trackCustomEvent(event, toMap(params));
                     Log.d(TAG, "Noctua track event "+event + " called");
 //                }
             }
