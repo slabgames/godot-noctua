@@ -187,12 +187,38 @@ public class GodotNoctua extends GodotPlugin {
                         orderId,
                         Float.parseFloat(amount),
                         currency,
-                        toMap(payload)
+                        toSafeMap(payload)
                 );
                 Log.d(TAG, "Noctua track purchase called");
 //            }
         }
     });
+    }
+
+  private HashMap<String, Object> toSafeMap(Dictionary dict) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (dict == null) return map;
+
+        for (Object key : dict.keySet()) {
+            Object value = dict.get(key);
+            String k = String.valueOf(key);
+
+            if (value instanceof Double) {
+                map.put(k, ((Double) value).floatValue());
+            } else if (value instanceof Integer) {
+                map.put(k, ((Integer) value).longValue());
+            } else if (
+                    value instanceof Float ||
+                    value instanceof Long ||
+                    value instanceof Boolean ||
+                    value instanceof String
+            ) {
+                map.put(k, value);
+            } else if (value != null) {
+                map.put(k, value.toString());
+            }
+        }
+        return map;
     }
 
     private HashMap<String, Object> toMap(Dictionary dict) {
@@ -213,7 +239,7 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
 //                if(noctuaSDK!= null) {
-                    Noctua.Companion.trackCustomEvent(event, toMap(params));
+                    Noctua.Companion.trackCustomEvent(event, toSafeMap(params));
                     Log.d(TAG, "Noctua track event "+event + " called");
 //                }
             }
@@ -236,7 +262,7 @@ public class GodotNoctua extends GodotPlugin {
                             adSource,
                             Float.parseFloat(revenue),
                             currency,
-                            toMap(params)
+                            toSafeMap(params)
                     );
                     Log.d(TAG, "Noctua track ad revenue called. From : " + adSource);
 //                }
@@ -256,7 +282,7 @@ public class GodotNoctua extends GodotPlugin {
             public void run() {
 //                if (noctuaSDK!=null)
 //                {
-                    Noctua.Companion.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,toMap(payload));
+                    Noctua.Companion.trackCustomEventWithRevenue(eventName,Float.parseFloat(revenue), currency,toSafeMap(payload));
                     Log.d(TAG, "Noctua track custom event called. Event = "+eventName);
 //                }
             }
