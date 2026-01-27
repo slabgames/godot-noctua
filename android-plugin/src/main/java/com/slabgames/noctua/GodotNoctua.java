@@ -53,13 +53,14 @@ public class GodotNoctua extends GodotPlugin {
 
     @Override
     public View onMainCreate(Activity activity) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> publishedApps= emptyList();
-                Noctua.Companion.initNoctuaApp(activity,publishedApps);
-            }
-        });
+        init();
+//        activity.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<String> publishedApps= emptyList();
+//                Noctua.Companion.initNoctuaApp(activity,publishedApps);
+//            }
+//        });
 
         return null;
     }
