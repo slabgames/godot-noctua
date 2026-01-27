@@ -60,7 +60,7 @@ public class GodotNoctua extends GodotPlugin {
                 Noctua.Companion.initNoctuaApp(activity,publishedApps);
             }
         });
-        init();
+//        init();
 
         return null;
     }
