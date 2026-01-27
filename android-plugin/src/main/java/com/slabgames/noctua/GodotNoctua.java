@@ -115,6 +115,7 @@ public class GodotNoctua extends GodotPlugin {
 //                noctuaSDK = new Noctua((Context) Objects.requireNonNull(getActivity()), publishedApps );
 
                 Noctua.Companion.init(Objects.requireNonNull(getActivity()),publishedApps);
+                _inited = true;
 
                 Log.d(TAG, "Noctua plugin inited on Java");
             }
