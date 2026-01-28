@@ -57,10 +57,10 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
                 List<String> publishedApps= emptyList();
-                Noctua.Companion.initNoctuaApp(activity,publishedApps);
+                Noctua.Companion.initNoctuaApp(activity.getApplicationContext(),publishedApps);
             }
         });
-//        init();
+        init();
 
         return null;
     }
@@ -72,7 +72,10 @@ public class GodotNoctua extends GodotPlugin {
             @Override
             public void run() {
                 if(_inited)
+                {
                     Noctua.Companion.onResume();
+                }
+
             }
         });
     }
@@ -83,8 +86,9 @@ public class GodotNoctua extends GodotPlugin {
         Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(_inited)
+                if(_inited) {
                     Noctua.Companion.onPause();
+                }
             }
         });
     }
