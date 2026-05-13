@@ -17,13 +17,15 @@ A Godot Engine plugin bridging Godot games to the Noctua analytics, attribution,
 gd/                      # GDScript interface (developer-facing API)
   noctua.gd              # Autoload singleton — thin wrapper over the native layer
 android-plugin/          # Android native implementation
-  src/main/java/com/slabgames/noctua/GodotNoctua.java   # Java plugin bridge
-  GodotNoctua.gdap       # Android plugin descriptor
+  src/main/java/com/slabgames/noctua/GodotNoctua.java   # Java plugin bridge (v2)
+  src/main/AndroidManifest.xml   # Plugin metadata (org.godotengine.plugin.v2)
   build.gradle           # Gradle build (produces AAR)
   libs/                  # Godot AAR (compile-only, not bundled in output)
 SConstruct               # SCons build script (legacy — iOS only, not actively used)
 noctua.json              # Plugin manifest (name, version, autoload, file mappings)
 ```
+
+> **Plugin format**: This plugin uses the **Godot 4.2+ v2 architecture** — discovered via `AndroidManifest.xml` meta-data (`org.godotengine.plugin.v2.GodotNoctua`), no `.gdap` descriptor. The sample app wires it up via an `EditorExportPlugin` addon (`addons/GodotNoctua/`).
 
 ---
 
