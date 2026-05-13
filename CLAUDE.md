@@ -21,8 +21,8 @@ android-plugin/          # Android native implementation
   src/main/AndroidManifest.xml   # Plugin metadata (org.godotengine.plugin.v2)
   build.gradle           # Gradle build (produces AAR)
   libs/                  # Godot AAR (compile-only, not bundled in output)
-SConstruct               # SCons build script (legacy — iOS only, not actively used)
-noctua.json              # Plugin manifest (name, version, autoload, file mappings)
+SConstruct               # SCons build script (legacy — unused, kept for reference)
+scripts/                 # iOS build helpers (legacy — unused since iOS bridge removed)
 ```
 
 > **Plugin format**: This plugin uses the **Godot 4.2+ v2 architecture** — discovered via `AndroidManifest.xml` meta-data (`org.godotengine.plugin.v2.GodotNoctua`), no `.gdap` descriptor. The sample app wires it up via an `EditorExportPlugin` addon (`addons/GodotNoctua/`).
@@ -31,33 +31,33 @@ noctua.json              # Plugin manifest (name, version, autoload, file mappin
 
 ## GDScript API (`gd/noctua.gd`)
 
-The plugin auto-initialises as the `adjust` autoload singleton. No `AppToken` or manual `init()` call is needed — the SDK reads config from `noctuagg.json` automatically via the native layer.
+The plugin auto-initialises as the **`noctua`** autoload singleton. No `AppToken` or manual `init()` call is needed — the SDK reads config from `noctuagg.json` automatically via the native layer.
 
 ```gdscript
 # ── Event Tracking ────────────────────────────────────────────────────────────
-adjust.track_event(event: String)
-adjust.track_event_with_params(event: String, params: Dictionary)
+noctua.track_event(event: String)
+noctua.track_event_with_params(event: String, params: Dictionary)
 
 # ── Revenue Tracking ──────────────────────────────────────────────────────────
-adjust.track_revenue(event: String, revenue: float, currency := "USD")
-adjust.track_purchase(order_id: String, amount: String, currency: String, payload: Dictionary)
-adjust.track_ad_revenue(ad_source: String, revenue: String, currency: String, params: Dictionary)
-adjust.track_custom_event_with_revenue(event_name: String, revenue: String, currency: String, payload: Dictionary)
+noctua.track_revenue(event: String, revenue: float, currency := "USD")
+noctua.track_purchase(order_id: String, amount: String, currency: String, payload: Dictionary)
+noctua.track_ad_revenue(ad_source: String, revenue: String, currency: String, params: Dictionary)
+noctua.track_custom_event_with_revenue(event_name: String, revenue: String, currency: String, payload: Dictionary)
 
 # ── Session ───────────────────────────────────────────────────────────────────
-adjust.set_session_tag(session_name: String)
-adjust.get_session_tag() -> String
-adjust.set_session_extra_params(params: Dictionary)
+noctua.set_session_tag(session_name: String)
+noctua.get_session_tag() -> String
+noctua.set_session_extra_params(params: Dictionary)
 
 # ── Experiments ───────────────────────────────────────────────────────────────
-adjust.set_experiment(experiment: String)
-adjust.get_experiment() -> String
-adjust.set_general_experiment(experiment: String)
-adjust.get_general_experiment(key: String) -> String
+noctua.set_experiment(experiment: String)
+noctua.get_experiment() -> String
+noctua.set_general_experiment(experiment: String)
+noctua.get_general_experiment(key: String) -> String
 
 # ── Network State ─────────────────────────────────────────────────────────────
-adjust.on_online()
-adjust.on_offline()
+noctua.on_online()
+noctua.on_offline()
 ```
 
 All calls are null-safe on desktop — methods silently no-op and return empty strings when the native plugin is not present.
@@ -107,7 +107,7 @@ sdk.dir=/Users/<you>/Library/Android/sdk
 | Pattern | Where |
 |---------|-------|
 | Kotlin object singleton | Android — `Noctua.INSTANCE.*` from Java |
-| Autoload singleton | `noctua.gd` registered as `adjust` in project settings |
+| Autoload singleton | `noctua.gd` registered as `noctua` in project settings |
 | Platform bridge | `GodotNoctua.java` translates GDScript calls to Noctua SDK |
 | UI-thread dispatch | Every Android SDK call wrapped in `runOnUiThread()` |
 | Auto-init from config | SDK reads `noctuagg.json` in `onMainCreate()` — no GDScript config needed |
@@ -129,7 +129,7 @@ sdk.dir=/Users/<you>/Library/Android/sdk
    ```groovy
    implementation("com.noctuagames.sdk:noctua-android-sdk:<new_version>")
    ```
-2. Update `android-plugin/GodotNoctua.gdap` → `remote` array to match.
+2. Update `export_plugin.gd` in the sample app's `addons/GodotNoctua/` — bump the version in `_get_android_dependencies()`.
 3. Rebuild the AAR and copy to the sample app's `android/plugins/`.
 4. **Update this CLAUDE.md** — bump the version in the header and dependencies table.
 
