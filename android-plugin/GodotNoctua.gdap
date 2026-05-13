@@ -8,4 +8,4 @@ binary="GodotNoctua.release.aar"
 
 local=[]
 remote=["com.noctuagames.sdk:noctua-android-sdk:0.32.0"]
-custom_maven_repos=[""]
+custom_maven_repos=[]
