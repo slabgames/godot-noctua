@@ -49,3 +49,42 @@ func track_custom_event_with_revenue(event_name: String, revenue: String, curren
 func set_session_tag(session_name: String) -> void:
 	if _noctua != null:
 		_noctua.set_session_tag(session_name)
+
+func get_session_tag() -> String:
+	if _noctua != null:
+		return _noctua.get_session_tag()
+	return ""
+
+func set_session_extra_params(params: Dictionary) -> void:
+	if _noctua != null:
+		_noctua.set_session_extra_params(params)
+
+# ── Experiments ───────────────────────────────────────────────────────────────
+
+func set_experiment(experiment: String) -> void:
+	if _noctua != null:
+		_noctua.set_experiment(experiment)
+
+func get_experiment() -> String:
+	if _noctua != null:
+		return _noctua.get_experiment()
+	return ""
+
+func set_general_experiment(experiment: String) -> void:
+	if _noctua != null:
+		_noctua.set_general_experiment(experiment)
+
+func get_general_experiment(key: String) -> String:
+	if _noctua != null:
+		return _noctua.get_general_experiment(key)
+	return ""
+
+# ── Network state ─────────────────────────────────────────────────────────────
+
+func on_online() -> void:
+	if _noctua != null:
+		_noctua.on_online()
+
+func on_offline() -> void:
+	if _noctua != null:
+		_noctua.on_offline()
