@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport sys, json, os\ndata = json.load(sys.stdin)\nfp = data.get('tool_input', {}).get('file_path', '')\nif fp and 'CLAUDE.md' not in fp:\n    rel = os.path.relpath(fp, '/Users/mujibnoctua/Documents/NoctuaProjects/godot-noctua-app/sdk')\n    print(f'[CLAUDE.md] File changed: {rel}')\n    print('If this adds/removes a file, changes the GDScript API, or bumps a dependency — update CLAUDE.md.')\n\""
+          }
+        ]
+      }
+    ]
+  }
+}

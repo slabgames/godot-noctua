@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-A Godot Engine plugin bridging Godot games to the Noctua analytics, attribution, and revenue backend. It exposes event tracking, revenue tracking, session management, experiments, and network-state reporting via a unified GDScript interface backed by platform-native implementations.
+A Godot Engine plugin bridging Godot games to the Noctua analytics, attribution, and revenue backend. It exposes event tracking, revenue tracking, session management, experiments, and network-state reporting via a unified GDScript interface backed by the Noctua Android SDK.
 
-- **Godot**: 4.x (primary) · 3.3.0+ (legacy support via conditional compilation)
-- **Platforms**: Android (Java/AAR) · iOS (ObjC++/XCFramework)
+- **Godot**: 4.x
+- **Platform**: Android (Java/AAR)
 - **Android SDK**: `com.noctuagames.sdk:noctua-android-sdk:0.32.0`
 - **License**: MIT
 
@@ -16,27 +16,14 @@ A Godot Engine plugin bridging Godot games to the Noctua analytics, attribution,
 ```
 gd/                      # GDScript interface (developer-facing API)
   noctua.gd              # Autoload singleton — thin wrapper over the native layer
-noctua/                  # iOS native implementation
-  adjust.h / adjust.mm   # ObjC++ Godot ↔ Noctua iOS bridge (legacy filenames)
-  adjust_module.h/.cpp   # Module registration (singleton lifecycle)
-  adjust.gdip            # iOS plugin descriptor (xcframework + system frameworks)
-  AdjustSdk.framework/   # Pre-built Noctua iOS framework (do not modify)
 android-plugin/          # Android native implementation
   src/main/java/com/slabgames/noctua/GodotNoctua.java   # Java plugin bridge
   GodotNoctua.gdap       # Android plugin descriptor
   build.gradle           # Gradle build (produces AAR)
   libs/                  # Godot AAR (compile-only, not bundled in output)
-scripts/                 # Shell build helpers for iOS
-  generate_xcframework.sh
-  generate_static_library.sh
-  release_xcframework.sh
-  release_static_library.sh
-  extract_headers.sh
-SConstruct               # SCons build script for iOS static libs / xcframework
+SConstruct               # SCons build script (legacy — iOS only, not actively used)
 noctua.json              # Plugin manifest (name, version, autoload, file mappings)
 ```
-
-> **Note on iOS filenames**: The iOS bridge files (`adjust.h`, `adjust.mm`, `adjust.gdip`, `AdjustSdk.framework`) use legacy naming from the original fork. The framework is Noctua's iOS SDK — do not mistake the filename for a reference to a third-party dependency.
 
 ---
 
@@ -71,7 +58,7 @@ adjust.on_online()
 adjust.on_offline()
 ```
 
-The `adjust` singleton is null-safe on desktop (no native layer) — all methods silently no-op and return empty strings when the native plugin is not present.
+All calls are null-safe on desktop — methods silently no-op and return empty strings when the native plugin is not present.
 
 ---
 
@@ -80,8 +67,8 @@ The `adjust` singleton is null-safe on desktop (no native layer) — all methods
 ### Prerequisites
 - Android SDK (`compileSdkVersion 36`, `minSdkVersion 22`)
 - JDK 17+ (Android Studio's JBR works)
-- Godot 4.x `.aar` placed in `android-plugin/libs/` (download from Godot GitHub releases)
-- Internet access for Maven dependencies (`mavenCentral`)
+- Godot 4.x `.aar` placed in `android-plugin/libs/` (download from [Godot releases](https://github.com/godotengine/godot/releases))
+- Internet access for Maven dependencies
 
 ### Build commands
 
@@ -101,7 +88,7 @@ sdk.dir=/Users/<you>/Library/Android/sdk
 | Dependency | Scope | Notes |
 |-----------|-------|-------|
 | Godot AAR (`godot-lib*.aar`) | `compileOnly` | Not bundled — Godot provides it at build time |
-| `com.noctuagames.sdk:noctua-android-sdk:0.32.0` | `implementation` | Noctua SDK from Maven Central |
+| `com.noctuagames.sdk:noctua-android-sdk:0.32.0` | `implementation` | Noctua SDK via Maven Central |
 
 ### Key implementation notes
 
@@ -113,72 +100,26 @@ sdk.dir=/Users/<you>/Library/Android/sdk
 
 ---
 
-## iOS Build
-
-### Prerequisites
-- Xcode + command-line tools
-- SCons (`pip install scons`)
-- Godot source headers (extracted via `scripts/extract_headers.sh`)
-
-### Build commands
-
-```bash
-# 1. Extract Godot headers
-./scripts/extract_headers.sh
-
-# 2. Build xcframework (preferred for distribution)
-#    Usage: ./scripts/generate_xcframework.sh <plugin_name> <target> <godot_version>
-./scripts/generate_xcframework.sh adjust release 4.0
-
-# 3. Or build static library
-./scripts/generate_static_library.sh adjust release 4.0
-
-# 4. Release build (produces both release + release_debug variants)
-./scripts/release_xcframework.sh adjust 4.0
-```
-
-### SCons parameters
-
-| Parameter | Values | Default |
-|-----------|--------|---------|
-| `target` | `debug`, `release`, `release_debug` | `debug` |
-| `arch` | `arm64`, `armv7`, `x86_64` | `arm64` |
-| `simulator` | `yes`, `no` | `no` |
-| `version` | `3.2`, `4.0` | `3.2` |
-| `use_llvm` | `yes`, `no` | `no` |
-
-### iOS System Framework Dependencies
-`AdSupport`, `iAd`, `AdServices`, `CoreTelephony`, `StoreKit`, `AppTrackingTransparency`
-
----
-
 ## Architecture Patterns
 
 | Pattern | Where |
 |---------|-------|
 | Kotlin object singleton | Android — `Noctua.INSTANCE.*` from Java |
 | Autoload singleton | `noctua.gd` registered as `adjust` in project settings |
-| Platform bridge (Android) | `GodotNoctua.java` translates GDScript calls to Noctua SDK |
-| Platform bridge (iOS) | `adjust.mm` translates GDScript calls to Noctua iOS framework |
+| Platform bridge | `GodotNoctua.java` translates GDScript calls to Noctua SDK |
 | UI-thread dispatch | Every Android SDK call wrapped in `runOnUiThread()` |
 | Auto-init from config | SDK reads `noctuagg.json` in `onMainCreate()` — no GDScript config needed |
-| Godot 3/4 compat | iOS bridge: conditional compilation via `#ifdef GDEXTENSION` |
 
 ---
 
 ## Common Tasks
 
-### Add a new GDScript-exposed method (Android)
+### Add a new GDScript-exposed method
 
 1. Add a Java method in `GodotNoctua.java` annotated `@UsedByGodot`.
 2. Call the Noctua SDK inside `activity.runOnUiThread(() -> { ... })`.
 3. Add a thin wrapper in `gd/noctua.gd` that delegates to `_noctua.<method>()`.
-
-### Add a new GDScript-exposed method (iOS)
-
-1. Declare in `noctua/adjust.h`, implement in `noctua/adjust.mm`.
-2. Bind via `ClassDB::bind_method(D_METHOD(...), &AdjustSdk::method)` in `adjust.mm`.
-3. Add a thin wrapper in `gd/noctua.gd`.
+4. **Update this CLAUDE.md** — add the new method to the GDScript API table above.
 
 ### Update Noctua Android SDK version
 
@@ -188,6 +129,7 @@ sdk.dir=/Users/<you>/Library/Android/sdk
    ```
 2. Update `android-plugin/GodotNoctua.gdap` → `remote` array to match.
 3. Rebuild the AAR and copy to the sample app's `android/plugins/`.
+4. **Update this CLAUDE.md** — bump the version in the header and dependencies table.
 
 ### Update Godot AAR version
 
@@ -195,9 +137,24 @@ Download the matching `godot-lib-<version>-template_release.aar` from the [Godot
 
 ---
 
+## Maintenance — Keeping This File Current
+
+**Update this CLAUDE.md whenever:**
+
+| Change | Section to update |
+|--------|------------------|
+| New file or directory added | Repository Layout |
+| File or directory removed | Repository Layout |
+| New `@UsedByGodot` method added to `GodotNoctua.java` | GDScript API |
+| Method removed or signature changed | GDScript API |
+| Noctua Android SDK version bumped | Header · Android Dependencies |
+| Godot AAR version changed | Android Build prerequisites |
+| New build step or Gradle flag added | Android Build commands |
+
+---
+
 ## Code Style
 
-- **ObjC++**: LLVM style enforced by `.clang-format` — 4-space indent, no column limit.
 - **GDScript**: Godot style guide; `noctua.gd` is a thin pass-through — no business logic.
 - **Java**: Standard Android conventions; all GDScript-facing methods must have `@UsedByGodot`.
 - **Immutability**: Prefer creating new objects over mutating existing ones.
@@ -208,10 +165,10 @@ Download the matching `godot-lib-<version>-template_release.aar` from the [Godot
 ## Testing
 
 No automated test suite. Manual workflow:
-1. Build the AAR (Android) or xcframework (iOS).
-2. Copy the binary into the sample app (`godot-noctua-app`).
+1. Build the AAR (`./gradlew assembleRelease` in `android-plugin/`).
+2. Copy the AAR into the sample app's `android/plugins/`.
 3. Place `noctuagg.json` with `"sandboxEnabled": true` in the app root.
-4. Run on a device or emulator.
+4. Run on a physical Android device.
 5. Verify events appear in the Noctua dashboard.
 
 ---
