@@ -17,15 +17,26 @@ A Godot Engine plugin bridging Godot games to the Noctua analytics, attribution,
 gd/                      # GDScript interface (developer-facing API)
   noctua.gd              # Autoload singleton — thin wrapper over the native layer
 android-plugin/          # Android native implementation
-  src/main/java/com/slabgames/noctua/GodotNoctua.java   # Java plugin bridge (v2)
-  src/main/AndroidManifest.xml   # Plugin metadata (org.godotengine.plugin.v2)
-  build.gradle           # Gradle build (produces AAR)
-  libs/                  # Godot AAR (compile-only, not bundled in output)
+  src/
+    main/
+      java/…/GodotNoctua.java   # Java plugin bridge (shared by both flavors)
+      AndroidManifest.xml       # Shared manifest — permissions only
+    godot3/
+      AndroidManifest.xml       # Godot 3.x: org.godotengine.plugin.v1 meta-data
+    godot4/
+      AndroidManifest.xml       # Godot 4.x: org.godotengine.plugin.v2 meta-data
+  build.gradle                  # Gradle build — godot3 / godot4 product flavors
+  GodotNoctua.godot3.gdap       # Plugin descriptor for Godot 3.x projects (.gdap format)
+  libs/
+    godot3/                     # Place godot-lib-3.6.2.*.aar here (not committed)
+    godot4/                     # Place godot-lib-4.x.x.*.aar here (not committed)
 SConstruct               # SCons build script (legacy — unused, kept for reference)
 scripts/                 # iOS build helpers (legacy — unused since iOS bridge removed)
 ```
 
-> **Plugin format**: This plugin uses the **Godot 4.2+ v2 architecture** — discovered via `AndroidManifest.xml` meta-data (`org.godotengine.plugin.v2.GodotNoctua`), no `.gdap` descriptor. The sample app wires it up via an `EditorExportPlugin` addon (`addons/GodotNoctua/`).
+> **Dual Godot version support**: The plugin builds two AARs via Gradle product flavors.  
+> - `GodotNoctua.godot3Release.aar` — Godot 3.6.x, plugin v1 (`org.godotengine.plugin.v1`), minSdk 19  
+> - `GodotNoctua.godot4Release.aar` — Godot 4.2+, plugin v2 (`org.godotengine.plugin.v2`), minSdk 22
 
 ---
 
@@ -76,14 +87,30 @@ All calls are null-safe on desktop — methods silently no-op and return empty s
 
 ```bash
 cd android-plugin
-./gradlew assembleDebug    # → build/outputs/aar/GodotNoctua.debug.aar
-./gradlew assembleRelease  # → build/outputs/aar/GodotNoctua.release.aar
+
+# Build both Godot versions at once
+./gradlew assembleRelease
+# → GodotNoctua.godot3Release.aar  (Godot 3.6.x)
+# → GodotNoctua.godot4Release.aar  (Godot 4.x)
+
+# Build a single flavor
+./gradlew assembleGodot3Release
+./gradlew assembleGodot4Release
 ```
 
 If Android SDK is not on PATH, set it in `android-plugin/local.properties`:
 ```
 sdk.dir=/Users/<you>/Library/Android/sdk
 ```
+
+### Godot AAR setup (required before building)
+
+Download the matching AAR from [Godot releases](https://github.com/godotengine/godot/releases) and place it in the correct `libs/` subfolder:
+
+| Godot version | File to download | Destination |
+|--------------|-----------------|-------------|
+| 3.6.2 | `godot-lib-3.6.2.stable.template_release.aar` | `android-plugin/libs/godot3/` |
+| 4.x | `godot-lib-4.x.x.stable.template_release.aar` | `android-plugin/libs/godot4/` |
 
 ### Android Dependencies
 

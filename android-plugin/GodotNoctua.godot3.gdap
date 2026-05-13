@@ -1,0 +1,11 @@
+[config]
+
+name="GodotNoctua"
+binary_type="local"
+binary="GodotNoctua.godot3Release.aar"
+
+[dependencies]
+
+local=[]
+remote=["com.noctuagames.sdk:noctua-android-sdk:0.32.0"]
+custom_maven_repos=[]
