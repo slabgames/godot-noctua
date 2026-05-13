@@ -1,7 +1,7 @@
 extends Node
 
 # Noctua SDK — GDScript bridge
-# Auto-registered as the "adjust" autoload singleton via project.godot.
+# Auto-registered as the "noctua" autoload singleton via project.godot.
 #
 # The SDK initialises itself automatically in GodotNoctua.onMainCreate()
 # by reading noctuagg.json from the project root — no manual token needed.
