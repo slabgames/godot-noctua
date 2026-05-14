@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
+
+  <application>
+    <!--
+    Godot 3.x plugin discovery uses the org.godotengine.plugin.v1 prefix.
+    The plugin name must match getPluginName() in GodotNoctua.java.
+    -->
+    <meta-data
+        android:name="org.godotengine.plugin.v1.GodotNoctua"
+        android:value="com.slabgames.noctua.GodotNoctua" />
+  </application>
+
+</manifest>

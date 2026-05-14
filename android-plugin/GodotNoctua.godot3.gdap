@@ -2,7 +2,7 @@
 
 name="GodotNoctua"
 binary_type="local"
-binary="GodotNoctua.release.aar"
+binary="GodotNoctua.godot3Release.aar"
 
 [dependencies]
 

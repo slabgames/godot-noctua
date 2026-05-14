@@ -20,78 +20,62 @@ apply plugin: 'com.android.library'
 android {
     namespace "com.slabgames.noctua.GodotNoctua"
     compileSdkVersion 36
-    buildToolsVersion "34.0.0"
 
     defaultConfig {
-        minSdkVersion 22
         targetSdkVersion 36
         versionCode 1
         versionName "1.0"
     }
 
-    // Used to customize the name of generated AAR file.
+    /*
+     * Two flavors — one per supported Godot major version.
+     *
+     * godot3: targets Godot 3.6.x (plugin v1, minSdk 19)
+     *         Godot AAR → libs/godot3/godot-lib*.aar
+     *         Manifest  → src/godot3/AndroidManifest.xml (v1 meta-data)
+     *
+     * godot4: targets Godot 4.x   (plugin v2, minSdk 22)
+     *         Godot AAR → libs/godot4/godot-lib*.aar
+     *         Manifest  → src/godot4/AndroidManifest.xml (v2 meta-data)
+     *
+     * Build both:  ./gradlew assembleRelease
+     * Build one:   ./gradlew assembleGodot4Release
+     */
+    flavorDimensions "godotVersion"
+    productFlavors {
+        godot3 {
+            dimension "godotVersion"
+            minSdkVersion 19
+        }
+        godot4 {
+            dimension "godotVersion"
+            minSdkVersion 22
+        }
+    }
+
+    // Output names: GodotNoctua.godot3Release.aar / GodotNoctua.godot4Release.aar
     libraryVariants.all { variant ->
         variant.outputs.all { output ->
             output.outputFileName = "GodotNoctua.${variant.name}.aar"
         }
     }
-
 }
 
 dependencies {
     /*
-    Used to provide dependency on the Godot Android library. A version of that
-    library will be made available for each stable release of Godot.
-    `compileOnly` is used instead of `implementation` to ensure that the
-     godot library is not bundled with the generated plugin AAR file. This is
-     necessary since the Godot editor will also provide a version of the godot
-     library when building the final binary.
+     * Godot Android library — compile-only so it is NOT bundled in the AAR.
+     * Godot itself provides this at runtime.
+     *
+     * Download the matching AAR from https://github.com/godotengine/godot/releases
+     *   Godot 3.x: godot-lib-3.6.2.stable.template_release.aar → libs/godot3/
+     *   Godot 4.x: godot-lib-4.x.x.stable.template_release.aar → libs/godot4/
      */
-    compileOnly fileTree(dir: 'libs', include: ['godot-lib*.aar'])
+    godot3CompileOnly fileTree(dir: 'libs/godot3', include: ['godot-lib*.aar'])
+    godot4CompileOnly fileTree(dir: 'libs/godot4', include: ['godot-lib*.aar'])
+
     implementation("com.noctuagames.sdk:noctua-android-sdk:0.32.0")
 }
-
 
 ext {
     artifact = 'godot-noctua'
 }
-
-//Properties properties = new Properties()
-//properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-
-//afterEvaluate {
-////    generateReleaseBuildConfig.enabled = false
-////    generateDebugBuildConfig.enabled = false
-//
-//    publishing {
-//        publications {
-//            MyPublication(MavenPublication) {
-//                from components.release
-//                groupId group
-//                artifactId artifact
-//                version version
-//            }
-//        }
-//    }
-//
-//    // Bintray
-////    bintray {
-////        user = properties.getProperty("bintray.user")
-////        key = properties.getProperty("bintray.apikey")
-////        publications = ['MyPublication']
-////        pkg {
-////            repo = 'maven'
-////            name = artifact
-////            userOrg = 'mobilap'
-////            desc = 'Adjust plugin for godot engine.'
-////            websiteUrl = 'https://github.com/DrMoriarty/godot-adjust'
-////            vcsUrl = 'https://github.com/DrMoriarty/godot-adjust.git'
-////            licenses = ["MIT", "BSD"]
-////            publish = true
-////            publicDownloadNumbers = true
-////            version {
-////            }
-////        }
-////    }
-//}
