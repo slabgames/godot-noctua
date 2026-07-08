@@ -13,7 +13,7 @@ Provides analytics event tracking, IAP purchase tracking, ad revenue tracking, s
 | Godot Engine | 3.6.x |
 | Android min SDK | 23 |
 | Java (build only) | 17 |
-| Noctua Native SDK | `0.32.0+` |
+| Noctua Native SDK | `0.34.0+` |
 
 ---
 
@@ -82,7 +82,7 @@ binary_type="local"
 binary="GodotNoctua.godot3Release.aar"
 
 [dependencies]
-remote=["com.noctuagames.sdk:noctua-android-sdk:0.32.0"]
+remote=["com.noctuagames.sdk:noctua-android-sdk:0.34.0"]
 custom_maven_repos=["https://dl.google.com/dl/android/maven2", "https://repo1.maven.org/maven2"]
 ```
 
