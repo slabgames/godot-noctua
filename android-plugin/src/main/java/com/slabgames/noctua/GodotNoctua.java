@@ -55,6 +55,7 @@ public class GodotNoctua extends GodotPlugin {
      */
     public GodotNoctua(Godot godot) {
         super(godot);
+        Log.i(TAG, "GodotNoctua plugin constructor called");
     }
 
     /**
@@ -83,15 +84,31 @@ public class GodotNoctua extends GodotPlugin {
      */
     @Override
     public View onMainCreate(Activity activity) {
-        activity.runOnUiThread(() -> {
+        Log.i(TAG, "onMainCreate: Initializing Noctua SDK...");
+        try {
             Noctua.INSTANCE.init(
                 activity,
                 emptyList(),
                 new NoctuaBillingConfig()
             );
             _inited = true;
-            Log.d(TAG, "Noctua SDK initialized");
-        });
+            Log.i(TAG, "Noctua SDK initialized successfully. Sandbox: " + com.noctuagames.sdk.utils.NoctuaLog.INSTANCE.getSandboxEnabled());
+            
+            try {
+                Noctua.INSTANCE.getAdjustSdkVersion(version -> {
+                    if (version != null) {
+                        Log.i(TAG, "Adjust SDK is initialized. Version: " + version);
+                    } else {
+                        Log.w(TAG, "Adjust SDK is NOT initialized (AdjustService is null or disabled)");
+                    }
+                    return kotlin.Unit.INSTANCE;
+                });
+            } catch (Exception err) {
+                Log.w(TAG, "Failed to get Adjust SDK version: " + err.getMessage());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Noctua SDK initialization failed: " + e.getMessage(), e);
+        }
         return null;
     }
 
