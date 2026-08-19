@@ -91,8 +91,9 @@ public class GodotNoctua extends GodotPlugin {
                 emptyList(),
                 new NoctuaBillingConfig()
             );
+            Noctua.INSTANCE.initApp();
             _inited = true;
-            Log.i(TAG, "Noctua SDK initialized successfully. Sandbox: " + com.noctuagames.sdk.utils.NoctuaLog.INSTANCE.getSandboxEnabled());
+            Log.i(TAG, "Noctua SDK initialized successfully (Koin started). Sandbox: " + com.noctuagames.sdk.utils.NoctuaLog.INSTANCE.getSandboxEnabled());
             
             try {
                 Noctua.INSTANCE.getAdjustSdkVersion(version -> {
